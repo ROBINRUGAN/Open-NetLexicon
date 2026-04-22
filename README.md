@@ -34,19 +34,19 @@ RUN_NAME=exp1 GPU=0 bash run_pretrain.sh
 
 ## Fine-tune (single dataset)
 
-Prepare dataset-specific splits first (example: `USTC-TFC`):
+Prepare dataset-specific splits first (example: `CipherSpectrum`):
 
 ```bash
-python3 prepare/prepare_splits.py --dataset USTC-TFC
+python3 prepare/prepare_splits.py --dataset CipherSpectrum
 ```
 
 Then fine-tune:
 
 ```bash
-bash run_finetune.sh USTC-TFC
+bash run_finetune.sh CipherSpectrum
 
 # overrides
-GPU=1 EPOCHS=20 PRETRAINED=checkpoints/pretrain/best.pt bash run_finetune.sh USTC-TFC
+GPU=1 EPOCHS=20 PRETRAINED=checkpoints/pretrain/best.pt bash run_finetune.sh CipherSpectrum
 ```
 
 ## Ablations
@@ -73,7 +73,7 @@ CUDA_VISIBLE_DEVICES=0 python3 pretrain/train.py --flow_loss_weight 0
 CUDA_VISIBLE_DEVICES=0 python3 finetune/finetune.py \
   --pretrained checkpoints/pretrain/best.pt \
   --no_vq \
-  --splits_dir splits/USTC-TFC
+  --splits_dir splits/CipherSpectrum
 ```
 
 ### no_pretrained
@@ -83,7 +83,7 @@ Fine-tune from random init (no pretraining):
 ```bash
 CUDA_VISIBLE_DEVICES=0 python3 finetune/finetune.py \
   --no_pretrained \
-  --splits_dir splits/USTC-TFC
+  --splits_dir splits/CipherSpectrum
 ```
 
 ## Codebook analysis
@@ -92,8 +92,10 @@ Analyze VQ code usage and its correlation with `window_stats` / labels on a chos
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python3 analysis/analyze_codebook.py \
-  --ckpt checkpoints/pretrain/best.pt \
-  --splits_dir splits/pretrain_all \
-  --split test 
+  --ckpt checkpoints/finetune/CipherSpectrum/best.pt
+  --splits_dir splits/CipherSpectrum \
+  --split test \
+  --full \
+  --min_count 10
 ```
 
